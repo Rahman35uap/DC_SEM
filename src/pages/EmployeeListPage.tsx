@@ -263,7 +263,7 @@ const EmployeeListPage = () => {
               <Table>
                 <TableHead>
                   <TableRow sx={{ bgcolor: '#f5f5f5' }}>
-                    <TableCell></TableCell>
+                    <TableCell>アクション</TableCell>
                     <TableCell>
                       <Box 
                         sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
@@ -293,13 +293,12 @@ const EmployeeListPage = () => {
                     <TableCell>カナ氏名</TableCell>
                     <TableCell>性別</TableCell>
                     <TableCell>退職</TableCell>
-                    <TableCell></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {currentPageEmployees.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={7} align="center">
+                      <TableCell colSpan={6} align="center">
                         データがありません
                       </TableCell>
                     </TableRow>
@@ -328,7 +327,6 @@ const EmployeeListPage = () => {
                             <Checkbox checked disabled />
                           )}
                         </TableCell>
-                        <TableCell></TableCell>
                       </TableRow>
                     ))
                   )}

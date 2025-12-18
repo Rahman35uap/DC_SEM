@@ -5,13 +5,35 @@
  * সব API calls এই file এ define করা আছে
  */
 
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, CancelTokenSource } from 'axios';
 import { 
   Employee, 
   SignInRequest, 
   SignUpRequest, 
   ApiResponse 
 } from '../types';
+
+// ===== Request Deduplication =====
+// একই request বার বার যাওয়া থেকে বাঁচানোর জন্য
+const pendingRequests = new Map<string, CancelTokenSource>();
+
+/**
+ * Generate unique key for request
+ */
+const getRequestKey = (config: any): string => {
+  return `${config.method}-${config.url}`;
+};
+
+/**
+ * Cancel duplicate pending requests
+ */
+const cancelPendingRequest = (key: string) => {
+  const source = pendingRequests.get(key);
+  if (source) {
+    source.cancel('Duplicate request cancelled');
+    pendingRequests.delete(key);
+  }
+};
 
 // ===== Axios Instance তৈরি =====
 // এটা একবার configuration করলে সব API call এ use করা যাবে
@@ -24,14 +46,22 @@ const api: AxiosInstance = axios.create({
 });
 
 // ===== Request Interceptor =====
-// প্রতিটি request এর আগে run হবে (future: token add করতে পারবেন)
+// প্রতিটি request এর আগে run হবে (duplicate cancellation)
 api.interceptors.request.use(
   (config) => {
-    // আপনি চাইলে এখানে auth token add করতে পারেন
-    // const token = localStorage.getItem('authToken');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    // Generate request key
+    const requestKey = getRequestKey(config);
+    
+    // Cancel any pending request with same key
+    cancelPendingRequest(requestKey);
+    
+    // Create new cancel token for this request
+    const source = axios.CancelToken.source();
+    config.cancelToken = source.token;
+    
+    // Store the cancel token
+    pendingRequests.set(requestKey, source);
+    
     return config;
   },
   (error) => {
@@ -43,11 +73,27 @@ api.interceptors.request.use(
 // প্রতিটি response এর পরে run হবে (error handling)
 api.interceptors.response.use(
   (response) => {
-    // Success response - যেমন আছে তেমন return করা
+    // Success - cleanup pending request
+    const requestKey = getRequestKey(response.config);
+    pendingRequests.delete(requestKey);
+    
     return response;
   },
-  (error) => {
-    // Error handling
+  async (error) => {
+    // Cleanup on error too
+    if (error.config) {
+      const requestKey = getRequestKey(error.config);
+      pendingRequests.delete(requestKey);
+    }
+    
+    // Skip retry for cancelled requests
+    if (axios.isCancel(error)) {
+      console.log('Request cancelled:', error.message);
+      return Promise.reject(error);
+    }
+    
+    // Error handling - NO RETRY!
+    // Retry was causing more problems by multiplying failed requests
     if (error.response) {
       // Server response পেয়েছি কিন্তু error status code
       console.error('API Error Response:', error.response.data);

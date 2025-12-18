@@ -95,9 +95,19 @@ const EmployeeDetail = () => {
    * Edit mode হলে existing employee data load করা
    */
   useEffect(() => {
-    if (!isNewEmployee && employeeId) {
-      loadEmployeeData(employeeId);
-    }
+    let isMounted = true;
+    
+    const fetchData = async () => {
+      if (!isNewEmployee && employeeId && isMounted) {
+        await loadEmployeeData(employeeId);
+      }
+    };
+    
+    fetchData();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [isNewEmployee, employeeId]);
 
   /**
@@ -132,6 +142,12 @@ const EmployeeDetail = () => {
         retireFlg: data.retireFlg || data.RetireFlg || false,
       });
     } catch (err: any) {
+      // Ignore cancelled requests - they're not real errors!
+      if (err.code === 'ERR_CANCELED' || err.code === 'ECONNABORTED' || err.message?.includes('cancel') || err.message?.includes('abort')) {
+        console.log('Request was cancelled (duplicate request), ignoring...');
+        return;
+      }
+      
       console.error('Error loading employee:', err);
       console.error('Error details:', err.response?.data);
       

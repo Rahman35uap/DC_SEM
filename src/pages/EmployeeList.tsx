@@ -87,7 +87,20 @@ const EmployeeList = () => {
    * Component load হলে employee list fetch করা
    */
   useEffect(() => {
-    loadEmployees();
+    let isMounted = true; // Track if component is still mounted
+    
+    const fetchData = async () => {
+      if (isMounted) {
+        await loadEmployees();
+      }
+    };
+    
+    fetchData();
+    
+    // Cleanup function - component unmount হলে run হবে
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   /**
@@ -113,10 +126,15 @@ const EmployeeList = () => {
         setError('社員データの取得に失敗しました。Response format: ' + JSON.stringify(response.data).substring(0, 100));
       }
     } catch (err: any) {
+      // Ignore cancelled requests - they're not real errors!
+      if (err.code === 'ERR_CANCELED' || err.code === 'ECONNABORTED' || err.message?.includes('cancel') || err.message?.includes('abort')) {
+        console.log('Request was cancelled (duplicate request), ignoring...');
+        return;
+      }
+      
       console.error('Error loading employees:', err);
       console.error('Error details:', err.response?.data);
       
-      // More detailed error message
       const errorMsg = err.response?.data?.message || err.message || '予期せぬエラーが発生しました。';
       setError(`エラー: ${errorMsg}. APIが正しく設定されているか確認してください。`);
     } finally {
@@ -369,7 +387,7 @@ const EmployeeList = () => {
                         {/* Name */}
                         <TableCell>
                           {employee.Name}
-                          {employee.RetireFlg && (
+                          {(employee.RetireFlg === 1) && (
                             <Chip
                               label="退職"
                               size="small"
@@ -387,7 +405,11 @@ const EmployeeList = () => {
 
                         {/* Retire Flag */}
                         <TableCell>
-                          <Checkbox checked={Boolean(employee.RetireFlg)} disabled />
+                          {employee.RetireFlg === 1 ? (
+                            <Checkbox checked disabled />
+                          ) : (
+                            <Checkbox checked={false} disabled />
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}

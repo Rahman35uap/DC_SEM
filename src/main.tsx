@@ -17,7 +17,5 @@ import './index.css';
  * Production build এ automatic remove হয়ে যায়
  */
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <App />
 );
