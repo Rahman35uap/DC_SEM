@@ -4,12 +4,12 @@
  * Employee Detail Page - Add/Edit Employee
  * 
  * UPDATED FEATURES:
- * 1. Input masks for PostCode (###-####) and PhoneNumber (###-####-####)
- * 2. Automatic hyphen insertion while typing
- * 3. Validation for correct format
- * 4. Error messages in RED
- * 5. No redirect on errors
- * 6. Email field support
+ * 1. Input masks for PostCode (###-####) - AUTO FORMAT
+ * 2. Manual phone number entry - HYPHENS REQUIRED
+ * 3. Phone number validation - HYPHENS MANDATORY
+ * 4. Email field support
+ * 5. Error messages in RED
+ * 6. No redirect on errors
  */
 
 import { useState, useEffect, FormEvent } from 'react';
@@ -51,10 +51,9 @@ import { Employee } from '../types';
 /**
  * EmployeeDetail Component
  * 
- * NEW FEATURES:
+ * FEATURES:
  * - Auto-format PostCode as ###-####
- * - Auto-format PhoneNumber as ###-####-####
- * - Validation for correct formats
+ * - Manual phone number entry with MANDATORY hyphens
  * - Real-time format checking
  */
 const EmployeeDetail = () => {
@@ -113,27 +112,6 @@ const EmployeeDetail = () => {
   };
 
   /**
-   * FORMAT PHONE NUMBER: ###-####-####
-   * Automatically adds hyphens at correct positions
-   */
-  const formatPhoneNumber = (value: string): string => {
-    // Remove all non-numeric characters
-    const numbers = value.replace(/\D/g, '');
-    
-    // Limit to 11 digits
-    const limited = numbers.slice(0, 11);
-    
-    // Add hyphens at correct positions
-    if (limited.length <= 3) {
-      return limited;
-    } else if (limited.length <= 7) {
-      return `${limited.slice(0, 3)}-${limited.slice(3)}`;
-    } else {
-      return `${limited.slice(0, 3)}-${limited.slice(3, 7)}-${limited.slice(7)}`;
-    }
-  };
-
-  /**
    * VALIDATE POSTAL CODE: Must be ###-#### (8 chars total)
    */
   const validatePostCode = (value: string): boolean => {
@@ -144,12 +122,18 @@ const EmployeeDetail = () => {
   };
 
   /**
-   * VALIDATE PHONE NUMBER: Must be ###-####-#### (13 chars total)
+   * VALIDATE PHONE NUMBER: HYPHENS REQUIRED
+   * Supports all Japanese phone number formats WITH mandatory hyphens:
+   * - Mobile: 070-XXXX-XXXX, 080-XXXX-XXXX, 090-XXXX-XXXX
+   * - IP Phone: 050-XXXX-XXXX
+   * - Toll-free: 0120-XXX-XXX(X), 0800-XXX-XXX(X)
+   * - Landline: 0X-XXXX-XXXX, 0XX-XXX-XXXX, 0XXX-XX-XXXX, etc.
    */
   const validatePhoneNumber = (value: string): boolean => {
     if (!value) return true; // Optional field
     
-    const pattern = /^\d{3}-\d{4}-\d{4}$/;
+    // Regex pattern with MANDATORY hyphens
+    const pattern = /^(0[5789]0-\d{4}-\d{4}|0120-\d{3}-\d{3,4}|0800-\d{3}-\d{3,4}|0\d{1,4}-\d{1,4}-\d{4})$/;
     return pattern.test(value);
   };
 
@@ -223,20 +207,17 @@ const EmployeeDetail = () => {
 
   /**
    * Handle input change with auto-formatting
-   * SPECIAL HANDLING for PostCode and PhoneNumber
+   * SPECIAL HANDLING for PostCode only (PhoneNumber is manual entry)
    */
   const handleChange = (field: string, value: any) => {
     let processedValue = value;
     
-    // Auto-format PostCode
+    // Auto-format PostCode only
     if (field === 'postCode') {
       processedValue = formatPostCode(value);
     }
     
-    // Auto-format PhoneNumber
-    if (field === 'phoneNumber') {
-      processedValue = formatPhoneNumber(value);
-    }
+    // PhoneNumber: No auto-formatting, user enters manually WITH hyphens
     
     setFormData(prev => ({
       ...prev,
@@ -275,8 +256,9 @@ const EmployeeDetail = () => {
     }
 
     // PhoneNumber format validation (Optional but must be valid if provided)
+    // HYPHENS ARE MANDATORY
     if (formData.phoneNumber && !validatePhoneNumber(formData.phoneNumber)) {
-      newErrors.phoneNumber = '電話番号の形式が正しくありません。（例: 090-1234-5678）';
+      newErrors.phoneNumber = '電話番号の形式が正しくありません。ハイフンを含めて入力してください。（例: 090-1234-5678）';
     }
 
     // Email format validation (Optional but must be valid if provided)
@@ -667,7 +649,7 @@ const EmployeeDetail = () => {
                 />
               </Grid>
 
-              {/* PhoneNumber with auto-formatting and validation */}
+              {/* PhoneNumber with manual entry and MANDATORY hyphen validation */}
               <Grid item xs={12} md={3}>
                 <TextField
                   fullWidth
@@ -676,8 +658,7 @@ const EmployeeDetail = () => {
                   onChange={(e) => handleChange('phoneNumber', e.target.value)}
                   placeholder="090-1234-5678"
                   error={!!errors.phoneNumber}
-                  helperText={errors.phoneNumber || "11桁の数字（自動でハイフン挿入）"}
-                  inputProps={{ maxLength: 13 }}
+                  helperText={errors.phoneNumber || "ハイフン必須（例: 090-1234-5678, 03-1234-5678）"}
                   disabled={loading}
                 />
               </Grid>
