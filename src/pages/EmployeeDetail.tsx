@@ -2,10 +2,14 @@
  * pages/EmployeeDetail.tsx
  * 
  * Employee Detail Page - Add/Edit Employee
- * Employee নতুন তৈরি করা বা edit করার page
  * 
- * NEW FEATURE: Employee ID is AUTO-GENERATED (disabled field)
- * FIXED: Error messages show in RED and don't redirect
+ * UPDATED FEATURES:
+ * 1. Input masks for PostCode (###-####) and PhoneNumber (###-####-####)
+ * 2. Automatic hyphen insertion while typing
+ * 3. Validation for correct format
+ * 4. Error messages in RED
+ * 5. No redirect on errors
+ * 6. Email field support
  */
 
 import { useState, useEffect, FormEvent } from 'react';
@@ -47,30 +51,25 @@ import { Employee } from '../types';
 /**
  * EmployeeDetail Component
  * 
- * Features:
- * - Add new employee (URL: /employees/new)
- * - Edit existing employee (URL: /employees/:id)
- * - Form validation
- * - Confirmation dialogs
- * - Delete functionality (only for existing employees)
- * 
- * NEW: Employee ID is AUTO-GENERATED (disabled field)
- * FIXED: Proper error handling with red color and no redirect
+ * NEW FEATURES:
+ * - Auto-format PostCode as ###-####
+ * - Auto-format PhoneNumber as ###-####-####
+ * - Validation for correct formats
+ * - Real-time format checking
  */
 const EmployeeDetail = () => {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();  // Get ID from URL parameter
+  const { id } = useParams<{ id: string }>();
   
-  // Check if this is new employee or edit mode
   const isNewEmployee = id === 'new';
   const employeeId = isNewEmployee ? null : parseInt(id || '0');
 
   // ===== State Management =====
-  // Form data
   const [formData, setFormData] = useState({
-    employeeId: '',  // This will be display-only (auto-generated or existing)
+    employeeId: '',
     name: '',
     kanaName: '',
+    email: '',
     sex: 0,
     postCode: '',
     address: '',
@@ -79,28 +78,83 @@ const EmployeeDetail = () => {
     retireFlg: false,
   });
 
-  // Loading states
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(!isNewEmployee);
 
-  // Messages
   const [message, setMessage] = useState<{
     type: 'success' | 'error';
     text: string;
   } | null>(null);
 
-  // Form validation errors
   const [errors, setErrors] = useState<{
     [key: string]: string;
   }>({});
 
-  // Confirmation dialogs
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [saveDialog, setSaveDialog] = useState(false);
 
   /**
+   * FORMAT POSTAL CODE: ###-####
+   * Automatically adds hyphen at correct position
+   */
+  const formatPostCode = (value: string): string => {
+    // Remove all non-numeric characters
+    const numbers = value.replace(/\D/g, '');
+    
+    // Limit to 7 digits
+    const limited = numbers.slice(0, 7);
+    
+    // Add hyphen after 3rd digit
+    if (limited.length <= 3) {
+      return limited;
+    }
+    
+    return `${limited.slice(0, 3)}-${limited.slice(3)}`;
+  };
+
+  /**
+   * FORMAT PHONE NUMBER: ###-####-####
+   * Automatically adds hyphens at correct positions
+   */
+  const formatPhoneNumber = (value: string): string => {
+    // Remove all non-numeric characters
+    const numbers = value.replace(/\D/g, '');
+    
+    // Limit to 11 digits
+    const limited = numbers.slice(0, 11);
+    
+    // Add hyphens at correct positions
+    if (limited.length <= 3) {
+      return limited;
+    } else if (limited.length <= 7) {
+      return `${limited.slice(0, 3)}-${limited.slice(3)}`;
+    } else {
+      return `${limited.slice(0, 3)}-${limited.slice(3, 7)}-${limited.slice(7)}`;
+    }
+  };
+
+  /**
+   * VALIDATE POSTAL CODE: Must be ###-#### (8 chars total)
+   */
+  const validatePostCode = (value: string): boolean => {
+    if (!value) return true; // Optional field
+    
+    const pattern = /^\d{3}-\d{4}$/;
+    return pattern.test(value);
+  };
+
+  /**
+   * VALIDATE PHONE NUMBER: Must be ###-####-#### (13 chars total)
+   */
+  const validatePhoneNumber = (value: string): boolean => {
+    if (!value) return true; // Optional field
+    
+    const pattern = /^\d{3}-\d{4}-\d{4}$/;
+    return pattern.test(value);
+  };
+
+  /**
    * Load employee data (Edit mode only)
-   * Edit mode হলে existing employee data load করা
    */
   useEffect(() => {
     let isMounted = true;
@@ -128,20 +182,19 @@ const EmployeeDetail = () => {
     try {
       const response = await employeeAPI.getById(id);
       
-      console.log('Employee data response:', response.data); // Debug log
+      console.log('Employee data response:', response.data);
       
-      // Check if data exists
       if (!response.data) {
         throw new Error('No data received from API');
       }
       
-      // Set form data from API response - handle both formats
-      const data = response.data.data || response.data; // Some APIs nest data
+      const data = response.data.data || response.data;
       
       setFormData({
         employeeId: data.employeeId || data.EmployeeId || '',
         name: data.name || data.Name || '',
         kanaName: data.kanaName || data.KanaName || '',
+        email: data.email || data.Email || '',
         sex: data.sex || data.Sex || 0,
         postCode: data.postCode || data.PostCode || '',
         address: data.address || data.Address || '',
@@ -150,7 +203,6 @@ const EmployeeDetail = () => {
         retireFlg: data.retireFlg || data.RetireFlg || false,
       });
     } catch (err: any) {
-      // Ignore cancelled requests - they're not real errors!
       if (err.code === 'ERR_CANCELED' || err.code === 'ECONNABORTED' || err.message?.includes('cancel') || err.message?.includes('abort')) {
         console.log('Request was cancelled (duplicate request), ignoring...');
         return;
@@ -170,16 +222,28 @@ const EmployeeDetail = () => {
   };
 
   /**
-   * Handle input change
-   * Form field এর value change হলে state update করা
+   * Handle input change with auto-formatting
+   * SPECIAL HANDLING for PostCode and PhoneNumber
    */
   const handleChange = (field: string, value: any) => {
+    let processedValue = value;
+    
+    // Auto-format PostCode
+    if (field === 'postCode') {
+      processedValue = formatPostCode(value);
+    }
+    
+    // Auto-format PhoneNumber
+    if (field === 'phoneNumber') {
+      processedValue = formatPhoneNumber(value);
+    }
+    
     setFormData(prev => ({
       ...prev,
-      [field]: value,
+      [field]: processedValue,
     }));
     
-    // Clear error for this field
+    // Clear error for this field when user types
     if (errors[field]) {
       setErrors(prev => ({
         ...prev,
@@ -190,24 +254,37 @@ const EmployeeDetail = () => {
 
   /**
    * Validate form
-   * Form submit করার আগে validation check করা
-   * 
-   * NEW: No longer validates Employee ID (auto-generated)
+   * INCLUDES PostCode and PhoneNumber format validation
    */
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
 
-    // Employee ID validation REMOVED (auto-generated by backend)
-    // No need to check employeeId anymore!
-
-    // Name validation
+    // Name validation (Required)
     if (!formData.name) {
       newErrors.name = '氏名を入力してください。';
     }
 
-    // Sex validation
+    // Sex validation (Required)
     if (!formData.sex || (formData.sex !== 1 && formData.sex !== 2)) {
       newErrors.sex = '性別を選択してください。';
+    }
+
+    // PostCode format validation (Optional but must be valid if provided)
+    if (formData.postCode && !validatePostCode(formData.postCode)) {
+      newErrors.postCode = '郵便番号の形式が正しくありません。（例: 123-4567）';
+    }
+
+    // PhoneNumber format validation (Optional but must be valid if provided)
+    if (formData.phoneNumber && !validatePhoneNumber(formData.phoneNumber)) {
+      newErrors.phoneNumber = '電話番号の形式が正しくありません。（例: 090-1234-5678）';
+    }
+
+    // Email format validation (Optional but must be valid if provided)
+    if (formData.email) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(formData.email)) {
+        newErrors.email = 'メールアドレスの形式が正しくありません。';
+      }
     }
 
     setErrors(newErrors);
@@ -216,7 +293,6 @@ const EmployeeDetail = () => {
 
   /**
    * Handle form submission
-   * Register button click করলে confirmation dialog show করা
    */
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -224,6 +300,10 @@ const EmployeeDetail = () => {
 
     // Validate form
     if (!validateForm()) {
+      setMessage({
+        type: 'error',
+        text: '入力内容に誤りがあります。エラー箇所を確認してください。',
+      });
       return;
     }
 
@@ -233,8 +313,7 @@ const EmployeeDetail = () => {
 
   /**
    * Confirm save
-   * Confirmation dialog এ "Yes" click করলে actual save করা
-   * FIXED: Only redirects on SUCCESS, stays on page on ERROR
+   * Only redirects on SUCCESS, stays on page on ERROR
    */
   const handleConfirmSave = async () => {
     setSaveDialog(false);
@@ -242,11 +321,10 @@ const EmployeeDetail = () => {
     setMessage(null);
 
     try {
-      // Prepare employee data
-      // NEW: Don't send employeeId on CREATE (backend auto-generates)
       const employeeData: Partial<Employee> = {
         Name: formData.name,
         KanaName: formData.kanaName,
+        Email: formData.email,
         Sex: formData.sex,
         PostCode: formData.postCode,
         Address: formData.address,
@@ -263,26 +341,22 @@ const EmployeeDetail = () => {
       let response;
       
       if (isNewEmployee) {
-        // Create new employee (backend will auto-generate EmployeeId)
         response = await employeeAPI.create(employeeData);
         
-        // Show success message with generated Employee ID
         setMessage({
           type: 'success',
           text: `社員を登録しました。社員ID: ${response.data.employeeId || '不明'}`,
         });
       } else {
-        // Update existing employee
         response = await employeeAPI.update(employeeId!, employeeData);
         
-        // Show standard success message for updates
         setMessage({
           type: 'success',
           text: response.data.message || '保存に成功しました。',
         });
       }
 
-      // FIXED: Only redirect on SUCCESS
+      // Only redirect on SUCCESS
       setTimeout(() => {
         navigate('/employees');
       }, 2000);
@@ -294,14 +368,13 @@ const EmployeeDetail = () => {
         err.message || 
         '保存に失敗しました。';
       
-      // FIXED: Show error in RED (type: 'error')
+      // Show error in RED
       setMessage({
         type: 'error',
         text: `エラー: ${errorMessage}`,
       });
       
-      // FIXED: DO NOT redirect on error - user stays on page to fix the issue
-      // NO setTimeout for navigation on error!
+      // NO redirect on error - user stays on page
       
     } finally {
       setLoading(false);
@@ -310,7 +383,6 @@ const EmployeeDetail = () => {
 
   /**
    * Handle delete
-   * Delete button click করলে confirmation dialog show করা
    */
   const handleDelete = () => {
     setDeleteDialog(true);
@@ -318,8 +390,6 @@ const EmployeeDetail = () => {
 
   /**
    * Confirm delete
-   * Delete confirmation dialog এ "Yes" click করলে delete করা
-   * FIXED: Only redirects on SUCCESS, stays on page on ERROR
    */
   const handleConfirmDelete = async () => {
     setDeleteDialog(false);
@@ -329,13 +399,11 @@ const EmployeeDetail = () => {
     try {
       const response = await employeeAPI.delete(employeeId!);
       
-      // Show success message
       setMessage({
         type: 'success',
         text: response.data.message || '削除に成功しました。',
       });
 
-      // FIXED: Only redirect on SUCCESS
       setTimeout(() => {
         navigate('/employees');
       }, 1500);
@@ -347,14 +415,10 @@ const EmployeeDetail = () => {
         err.message || 
         '削除に失敗しました。';
       
-      // FIXED: Show error in RED (type: 'error')
       setMessage({
         type: 'error',
         text: `エラー: ${errorMessage}`,
       });
-      
-      // FIXED: DO NOT redirect on error
-      // User stays on page to see the error message
       
     } finally {
       setLoading(false);
@@ -363,7 +427,6 @@ const EmployeeDetail = () => {
 
   /**
    * Handle back button
-   * Back button click করলে employee list এ return করা
    */
   const handleBack = () => {
     navigate('/employees');
@@ -407,7 +470,6 @@ const EmployeeDetail = () => {
           </Box>
 
           <Box>
-            {/* Back Button */}
             <Button
               variant="outlined"
               startIcon={<BackIcon />}
@@ -417,7 +479,6 @@ const EmployeeDetail = () => {
               戻る
             </Button>
 
-            {/* Delete Button (only for existing employees) */}
             {!isNewEmployee && (
               <Button
                 variant="contained"
@@ -431,7 +492,6 @@ const EmployeeDetail = () => {
               </Button>
             )}
 
-            {/* Register Button */}
             <Button
               type="submit"
               form="employeeForm"
@@ -446,8 +506,6 @@ const EmployeeDetail = () => {
         </Box>
 
         {/* Status Message */}
-        {/* FIXED: Alert component automatically shows correct color based on severity */}
-        {/* severity="error" = RED, severity="success" = GREEN */}
         {message && (
           <Alert 
             severity={message.type} 
@@ -469,7 +527,6 @@ const EmployeeDetail = () => {
             <Grid container spacing={3}>
               {/* Row 1 */}
               <Grid item xs={12} md={3}>
-                {/* NEW: Employee ID is DISABLED (auto-generated) */}
                 <Tooltip 
                   title={isNewEmployee ? "社員IDは自動生成されます" : "社員IDは変更できません"}
                   arrow
@@ -496,13 +553,16 @@ const EmployeeDetail = () => {
                 </Tooltip>
               </Grid>
 
+              {/* PostCode with auto-formatting and validation */}
               <Grid item xs={12} md={3}>
                 <TextField
                   fullWidth
                   label="郵便番号"
                   value={formData.postCode}
                   onChange={(e) => handleChange('postCode', e.target.value)}
-                  placeholder="000-0000"
+                  placeholder="123-4567"
+                  error={!!errors.postCode}
+                  helperText={errors.postCode || "7桁の数字（自動でハイフン挿入）"}
                   inputProps={{ maxLength: 8 }}
                   disabled={loading}
                 />
@@ -563,7 +623,23 @@ const EmployeeDetail = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={9}>
+              {/* Email field */}
+              <Grid item xs={12} md={3}>
+                <TextField
+                  fullWidth
+                  label="メールアドレス"
+                  value={formData.email}
+                  onChange={(e) => handleChange('email', e.target.value)}
+                  placeholder="example@company.com"
+                  type="email"
+                  error={!!errors.email}
+                  helperText={errors.email}
+                  inputProps={{ maxLength: 64 }}
+                  disabled={loading}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
                   label="住所"
@@ -591,13 +667,16 @@ const EmployeeDetail = () => {
                 />
               </Grid>
 
+              {/* PhoneNumber with auto-formatting and validation */}
               <Grid item xs={12} md={3}>
                 <TextField
                   fullWidth
                   label="電話番号"
                   value={formData.phoneNumber}
                   onChange={(e) => handleChange('phoneNumber', e.target.value)}
-                  placeholder="090-XXXX-XXXX"
+                  placeholder="090-1234-5678"
+                  error={!!errors.phoneNumber}
+                  helperText={errors.phoneNumber || "11桁の数字（自動でハイフン挿入）"}
                   inputProps={{ maxLength: 13 }}
                   disabled={loading}
                 />
