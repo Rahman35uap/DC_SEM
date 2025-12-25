@@ -22,7 +22,7 @@
 
 Ohayō gozaimasu. Kyō wa kono yō na kikai (opportunity) o itadaki, hontō ni arigatō gozaimasu.
 
-Watashi no namae wa [Your Name] desu. Genzai (currently), IRIS de intān (intern) toshite hataraite imasu. Kyō wa, intānshippu (internship) chū ni kaihatsu (developed) shita Shain Kanri Shisutemu (Employee Management System) ni tsuite happyō (present) sasete itadakimasu.
+Watashi wa S M Tanjilur Rahman to moshimasu. Saishin (currently), IRIS to React.js wo benkiyoshite hataraite imasu. Kyō wa, benkyo suru chū ni kaihatsu (developed) shita Shain Kanri Shisutemu (Employee Management System) ni tsuite happyō (present) shimasu.
 
 ## Purojekuto Gaiyō (Project Overview)
 
@@ -39,13 +39,11 @@ Apurikēshon (application) wa modān (modern) na web gijutsu (technology) de kō
 
 ## Happyō Mokuteki (Presentation Goals)
 
-Tsugi no 12-fun (minutes) de, mittsu no omo (main) na bun'ya (area) o setsumei shimasu:
+Tsugi no bun de, futatsu no omo (main) na bun'ya (area) o setsumei shimasu:
 
 Mazu (first), shisutemu ākitekucha (architecture) - three-tier dezain (design) ga dō yatte bunri (separation) to sukērabiliti (scalability) o teikyō suru ka o setsumei shimasu.
 
 Tsugini (second), kanzen na raibu demonstrēshon (demonstration) - tōroku (registration) kara shain kanri made no kanzen na yūzā jānī (user journey) o omise shite, kaku kino (feature) no ushiro ni aru jūyō (important) na kōdo jisō (code implementation) o setsumei shimasu.
-
-Saigo ni (third), gijutsu-teki kettei (technical decision) to shōrai no kaizen (future improvement) - watashi ga shita sentaku (choice) to, kono shisutemu ga puroddakushon (production) shiyō (use) no tame ni dō kyōka (enhance) sareru ka o giron (discuss) shimasu.
 
 Dewa, ākitekucha kara hajimemashō.
 
