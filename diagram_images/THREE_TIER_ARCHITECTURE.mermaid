@@ -1,0 +1,36 @@
+%% THREE-TIER ARCHITECTURE DIAGRAM
+%% This is the recommended diagram for your presentation
+
+graph TB
+    subgraph "PRESENTATION TIER"
+        Browser[Web Browser]
+        React[React Application<br/>TypeScript + Material-UI + Router]
+    end
+    
+    subgraph "APPLICATION TIER"
+        Proxy[Vite Proxy<br/>Port 5173 to 52773]
+        REST[REST API<br/>Authentication + Employee CRUD + JSON]
+    end
+    
+    subgraph "DATA TIER"
+        IRIS[IRIS Database<br/>ObjectScript + Persistent Classes + SQL]
+    end
+    
+    Browser --> React
+    React -->|HTTP Requests| Proxy
+    Proxy -->|Forward| REST
+    REST -->|Query/Save| IRIS
+    IRIS -->|Results| REST
+    REST -->|JSON| Proxy
+    Proxy -->|Response| React
+    React -->|Display| Browser
+    
+    classDef presentation fill:#61dafb,stroke:#333,stroke-width:3px,color:#000
+    classDef application fill:#ff6b6b,stroke:#333,stroke-width:3px,color:#fff
+    classDef data fill:#4ecdc4,stroke:#333,stroke-width:3px,color:#000
+    classDef proxy fill:#ffe66d,stroke:#333,stroke-width:3px,color:#000
+    
+    class Browser,React presentation
+    class REST application
+    class IRIS data
+    class Proxy proxy

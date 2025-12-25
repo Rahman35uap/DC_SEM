@@ -1,0 +1,26 @@
+%% DATABASE SCHEMA DIAGRAM
+
+erDiagram
+    tblAccount ||--o{ tblEmployee : manages
+    
+    tblAccount {
+        int ID PK
+        string Email UK
+        string Password
+        string Name
+    }
+    
+    tblEmployee {
+        int ID PK
+        string EmployeeId UK
+        string Name
+        string KanaName
+        int Sex
+        string PostCode
+        string Address
+        string PhoneNumber
+        string Department
+        boolean RetireFlg
+        boolean deleteFlg
+        datetime upDateTime
+    }

@@ -1,0 +1,81 @@
+%% COMPLETE TECHNICAL ARCHITECTURE
+%% All components and connections
+
+graph TB
+    subgraph "Frontend Layer"
+        P1[SignUp.tsx]
+        P2[SignIn.tsx]
+        P3[EmployeeList.tsx]
+        P4[EmployeeDetail.tsx]
+        
+        C1[Layout.tsx]
+        C2[ProtectedRoute.tsx]
+        
+        S1[api.ts]
+        S2[auth.ts]
+        
+        Router[App.tsx]
+    end
+    
+    subgraph "Proxy Layer"
+        Vite[Vite Proxy 5173 to 52773]
+    end
+    
+    subgraph "Backend Layer"
+        API[SEMRESTAPI.cls]
+        
+        E1[POST /sem/signup]
+        E2[POST /sem/signin]
+        E3[GET /sem/employees]
+        E4[GET /sem/employee/:id]
+        E5[POST /sem/employee]
+        E6[PUT /sem/employee/:id]
+        E7[DELETE /sem/employee/:id]
+        
+        DB1[tblAccount.cls]
+        DB2[tblEmployee.cls]
+    end
+    
+    Router --> P1
+    Router --> P2
+    Router --> P3
+    Router --> P4
+    
+    P1 --> S1
+    P2 --> S1
+    P2 --> S2
+    P3 --> S1
+    P3 --> C1
+    P3 --> C2
+    P4 --> S1
+    P4 --> C1
+    P4 --> C2
+    
+    S1 --> Vite
+    Vite --> API
+    
+    API --> E1
+    API --> E2
+    API --> E3
+    API --> E4
+    API --> E5
+    API --> E6
+    API --> E7
+    
+    E1 --> DB1
+    E2 --> DB1
+    E3 --> DB2
+    E4 --> DB2
+    E5 --> DB2
+    E6 --> DB2
+    E7 --> DB2
+    
+    classDef frontend fill:#61dafb,stroke:#333,stroke-width:2px
+    classDef proxy fill:#ffe66d,stroke:#333,stroke-width:2px
+    classDef backend fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    classDef database fill:#4ecdc4,stroke:#333,stroke-width:2px
+    
+    class P1,P2,P3,P4,C1,C2,S1,S2,Router frontend
+    class Vite proxy
+    class API,E1,E2,E3,E4,E5,E6,E7 backend
+    class DB1,DB2 database
