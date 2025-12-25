@@ -1,0 +1,57 @@
+%% COMPONENT RELATIONSHIP DIAGRAM
+%% Frontend Structure
+
+graph TB
+    Main[main.tsx Entry Point]
+    Router[App.tsx Router]
+    
+    SignUp[SignUp Page]
+    SignIn[SignIn Page]
+    
+    Guard[ProtectedRoute Auth Guard]
+    Layout[Layout Navigation]
+    List[EmployeeList Search Filter Sort]
+    Detail[EmployeeDetail Add Edit Delete]
+    
+    API[api.ts Axios Client]
+    Auth[auth.ts LocalStorage]
+    Types[types/index.ts Interfaces]
+    
+    Main --> Router
+    Router --> SignUp
+    Router --> SignIn
+    Router --> Guard
+    Guard -->|authenticated| Layout
+    Guard -->|not authenticated| SignIn
+    Layout --> List
+    Layout --> Detail
+    
+    SignUp --> API
+    SignIn --> API
+    SignIn --> Auth
+    List --> API
+    Detail --> API
+    Guard --> Auth
+    Layout --> Auth
+    
+    SignUp -.->|uses| Types
+    SignIn -.->|uses| Types
+    List -.->|uses| Types
+    Detail -.->|uses| Types
+    API -.->|uses| Types
+    
+    classDef entry fill:#333,stroke:#333,stroke-width:2px,color:#fff
+    classDef router fill:#61dafb,stroke:#333,stroke-width:2px
+    classDef public fill:#b8e6ff,stroke:#333,stroke-width:2px
+    classDef protected fill:#ffe66d,stroke:#333,stroke-width:2px
+    classDef guard fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    classDef service fill:#4ecdc4,stroke:#333,stroke-width:2px
+    classDef types fill:#e1e1e1,stroke:#333,stroke-width:2px
+    
+    class Main entry
+    class Router router
+    class SignUp,SignIn public
+    class List,Detail public
+    class Layout,Guard protected
+    class API,Auth service
+    class Types types

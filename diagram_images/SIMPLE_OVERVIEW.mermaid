@@ -1,0 +1,17 @@
+%% SIMPLE OVERVIEW DIAGRAM
+%% For executives and non-technical audience
+
+graph LR
+    A[User Web Browser] --> B[Frontend React UI]
+    B --> C[REST API Backend]
+    C --> D[IRIS Database]
+    
+    classDef user fill:#e1f5ff,stroke:#333,stroke-width:2px
+    classDef frontend fill:#61dafb,stroke:#333,stroke-width:2px
+    classDef backend fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
+    classDef database fill:#4ecdc4,stroke:#333,stroke-width:2px
+    
+    class A user
+    class B frontend
+    class C backend
+    class D database

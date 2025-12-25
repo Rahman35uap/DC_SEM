@@ -1,0 +1,40 @@
+%% DATA FLOW DIAGRAM
+%% Example: Creating New Employee
+
+sequenceDiagram
+    participant User
+    participant React
+    participant Axios
+    participant Vite
+    participant API
+    participant Class
+    participant DB
+    
+    User->>React: Fill form and submit
+    React->>React: Client validation
+    React->>React: Show confirmation
+    User->>React: Confirm
+    
+    React->>Axios: POST /sem/employee
+    Axios->>Vite: HTTP POST :5173
+    Vite->>API: Forward to :52773
+    
+    API->>API: Parse JSON
+    API->>API: Server validation
+    API->>API: Check duplicate
+    
+    API->>Class: Create object
+    API->>Class: Set properties
+    API->>Class: UTF-8 conversion
+    
+    Class->>DB: Save to database
+    DB-->>Class: Success
+    
+    Class-->>API: Return OK
+    API-->>Vite: JSON response
+    Vite-->>Axios: Forward
+    Axios-->>React: Resolve
+    
+    React->>React: Success message
+    React->>React: Navigate to list
+    React->>User: Display updated list
