@@ -16,364 +16,515 @@
 
 ---
 
-# [SECTION 1: JIKO-SHŌKAI / INTRODUCTION] (1.5 minutes)
+# [SECTION 1: HAJIME NI / INTRODUCTION] (1.5 minutes)
 
-## Aisatsu (Opening / Greeting)
+## Aisatsu (Greeting)
 
-Ohayō gozaimasu. Kyō wa kono yō na kikai (opportunity) o itadaki, hontō ni arigatō gozaimasu.
+Ohayou gozaimasu (Good morning).
+Kyou wa arigatou gozaimasu (Thank you for today).
 
-Watashi wa S M Tanjilur Rahman to moshimasu. Saishin (currently), IRIS to React.js wo benkiyoshite hataraite imasu. Kyō wa, benkyo suru chū ni kaihatsu (developed) shita Shain Kanri Shisutemu (Employee Management System) ni tsuite happyō (present) shimasu.
+Watashi no namae wa S M Tanjilur Rahman desu (My name is...).
+Ima, IRIS to React.js wo benkyou shite imasu (I am studying...).
+Kyou wa Employee Management System ni tsuite hanashimasu (I will talk about...).
 
-## Purojekuto Gaiyō (Project Overview)
+## PROJECT ni tsuite (About the Project)
 
-Kore wa full-stack web apurikēshon (application) de, shain jōhō (employee information) o kanri (manage) suru tame no mono desu. Kono shisutemu wa kanzen (complete) na CRUD kino (functionality) o teikyō (provide) shimasu - Create, Read, Update, Delete sōsa (operation) de shain rekōdo (record) o toriatsukai (handle) masu.
+Kore wa web application desu.
+Shain no jouhou (employee information) wo kanri shimasu (manage).
 
-Omo (main) na kino (features) wa:
-- Yūzā (user) no tōroku (registration) to ninshō (authentication)
-- Atarashii shain o dētabēsu (database) ni tsuika (add) suru
-- Riaru-taimu (real-time) kōshin (update) de shain rekōdo o kensaku (search) to firuta (filter) suru
-- Busho (department) to taishoku jōkyō (retirement status) o fukumeru shain jōhō o kōshin suru
-- Dēta hozon (data retention) to rikabarī (recovery) no tame no soft delete jisō (implementation)
+Kono system wa CRUD kinou (functions) ga arimasu:
+- Create - tsukuru (make/create)
+- Read - yomu (read)
+- Update - koushin suru (update)
+- Delete - sakujo suru (delete)
 
-Apurikēshon (application) wa modān (modern) na web gijutsu (technology) de kōchiku (built) sarete imasu. Furontoendo (frontend) wa React.js to TypeScript o shiyō shite taipu anzen-sei (type safety) o teikyō shimasu. Bakkuendo (backend) wa InterSystems IRIS dētabēsu to ObjectScript o bijinesu rojikku (business logic) ni shiyō shite imasu.
+## Omona kinou (Main Features)
 
-## Happyō Mokuteki (Presentation Goals)
+- User touroku (user registration) to login (login)
+- Atarashii shain wo tsuika shimasu (add new employees)
+- Shain wo kensaku shimasu (search employees)
+- Shain jouhou wo koushin shimasu (update employee information)
+- Soft delete - data wo hozon shimasu (save/keep data)
 
-Tsugi no bun de, futatsu no omo (main) na bun'ya (area) o setsumei shimasu:
+## Gijutsu (Technology)
 
-Mazu (first), shisutemu ākitekucha (architecture) - three-tier dezain (design) ga dō yatte bunri (separation) to sukērabiliti (scalability) o teikyō suru ka o setsumei shimasu.
+**Frontend:**
+- React.js
+- TypeScript
+- Material-UI
 
-Tsugini (second), kanzen na raibu demonstrēshon (demonstration) - tōroku (registration) kara shain kanri made no kanzen na yūzā jānī (user journey) o omise shite, kaku kino (feature) no ushiro ni aru jūyō (important) na kōdo jisō (code implementation) o setsumei shimasu.
+**Backend:**
+- InterSystems IRIS database
+- ObjectScript
 
-Dewa, ākitekucha kara hajimemashō.
+## Kyou no hanashi (Today's Presentation)
 
----
+1. System Architecture
+2. Live Demo
 
-# [SECTION 2: SHISUTEMU ĀKITEKUCHA / SYSTEM ARCHITECTURE] (2.5 minutes)
-
-## Part 2.1: Ākitekucha Zu no Setsumei (Architecture Diagram Explanation) (1.5 minutes)
-
-**[Display: THREE_TIER_ARCHITECTURE.png / Zu o hyōji]**
-
-Shisutemu ākitekucha o omise shimasu. Watashitachi no apurikēshon wa three-tier ākitekucha ni shitagatte imasu. Kore wa gyōkai hyōjun (industry-standard) no dezain patān (design pattern) de, konsān (concern) o kotonatsu (distinct) na layā (layer) ni bunri (separate) shimasu.
-
-### Purezentēshon Tiyā (Presentation Tier / Top Layer)
-
-**[Point to the top of diagram / Zu no ue o shimesu]**
-
-Ichiban ue ni, Purezentēshon Tiyā ga arimasu. Koko wa yūzā ga web burauza (browser) o tsūjite shisutemu to sōgo sayō (interact) suru tokoro desu.
-
-Furontoendo wa React 18 de kōchiku sareta single-page apurikēshon desu. TypeScript o konpairu-jikan (compile-time) taipu chekku (type checking) ni shiyō shite imasu. Kore wa puroddakushon dewa naku kaihatsu-chū (during development) ni erā (error) o mitsukeru no ni yakudachimasu. UI konpōnento (component) wa Material-UI kara kite imasu. Kore wa Google no Material Design gaidorain (guideline) ni shitagatte, purofesshonaru (professional) de akuseshiburu (accessible) na konpōnento o teikyō shimasu. Soshite React Router ga pēji rirōdo (page reload) nashi de kuraianto-saido (client-side) nabigēshon (navigation) o handoru (handle) shimasu.
-
-Kore wa subete yūzā no burauza de ugoki, kaihatsu-chū wa pōto (port) 5173 de jikkō (run) shimasu.
-
-### Apurikēshon Tiyā (Application Tier / Middle Layer)
-
-**[Point to the middle of diagram / Zu no mannaka o shimesu]**
-
-Mannaka ni wa Apurikēshon Tiyā ga arimasu - kore wa watashitachi no REST API layā desu.
-
-Kaihatsu-chū wa, Vite proxy ga pōto 5173 kara pōto 52773 ni rikuesuto (request) o tenshō (forward) shimasu. Kore wa CORS mondai (problem) o kaiketsu (solve) shite, shīmuresa (seamless) na kaihatsu keiken (development experience) o teikyō shimasu. Puroddakushon dewa, ryōhō (both) no tiyā wa futsū (typically) onaji domēn (domain) ni arimasu.
-
-REST API wa mittsu no omo na sekinin (responsibility) o motsu:
-- Dai-ichi (first), ninshō (authentication) - yūzā tōroku to roguin (login)
-- Dai-ni (second), shain CRUD sōsa - subete no create, read, update, delete kino
-- Dai-san (third), dēta fōmattingu (formatting) - furontoendo JSON to bakkuendo dētabēsu fōmatto (format) no aida no henkan (conversion)
-
-### Dēta Tiyā (Data Tier / Bottom Layer)
-
-**[Point to the bottom of diagram / Zu no shita o shimesu]**
-
-Sakanso (bottom) ni wa Dēta Tiyā ga arimasu - InterSystems IRIS dētabēsu desu.
-
-IRIS wa maruchimoderu (multi-model) dētabēsu de, obujekuto (object), SQL, soshite kī-baryū (key-value) sutorēji (storage) o dōji ni (simultaneously) sapōto (support) shimasu. Watashitachi wa ObjectScript o shiyō shite imasu. Kore wa IRIS no neitibu gengo (native language) desu. ObjectScript wa persistent class o tsūjite dētabēsu to chokusetsu (direct) tōgō (integration) o teikyō shimasu.
-
-%Persistent o extends suru class o teigi (define) suru to, IRIS ga jidō-teki ni (automatically) dētabēsu tēburu (table) o sakusei (create) shi, SQL kueri (query) o seisei (generate) shi, %Save, %OpenId, %Delete nado no mesoddo (method) o teikyō shimasu. Kōdo to dētabēsu no kono kinmitsu (tight) na tōgō wa totemo pawāfuru (powerful) desu.
-
-Jūyō na gijutsu-teki shōsai (technical detail) wa UTF-8 moji enkōdingu (character encoding) desu. Nihonjin no shain namae to jūsho (address) o atsukatteiru node, bakkuendo zentai ni $ZCONVERT kansu (function) o shiyō shite, Nihongo moji ga mojibake nashi de tadashiku hyōji (display) sareru yō ni shimasu.
-
-### Dēta Furō (Data Flow)
-
-**[Point to the arrows connecting the tiers / Tiyā o tsunagu ya o shimesu]**
-
-Dēta furō wa kantan (straightforward) de, hyōjun (standard) REST gensoku (principle) ni shitagatte imasu:
-
-Yūzā ga React intāfesu (interface) to sōsa (interact) suru to, HTTP rikuesuto o okuru. Kore wa Vite proxy o tsūjite REST API ni ikimasu. API ga rikuesuto o shori (process) shi, ObjectScript o shiyō shite dētabēsu sōsa o jikkō shi, JSON respponsu (response) o kaesu. Furontoendo ga kono respponsu o ukete, UI o kōshin shimasu.
-
-Kore wa hinzutsu-teki ni (asynchronously) okonawareru node, dētabēsu sōsa-chū demo yūzā intāfesu wa ōtō-teki (responsive) na mama desu.
-
-## Part 2.2: Ākitekucha no Rieki (Architecture Benefits) (30 seconds)
-
-Kono three-tier ākitekucha wa ikutsu ka no jūyō na rieki (benefit) o teikyō shimasu:
-
-**Konsān no bunri (separation of concerns)** - kaku tiyā wa tokutei (specific) no sekinin o motsu. Furontoendo wa yūzā keiken (user experience) ni shūchū (focus) shi, API wa bijinesu rojikku o handoru shi, dētabēsu wa dēta eizoku-sei (data persistence) o kanri shimasu.
-
-**Dokuritsu-teki na sukērabiliti (independent scalability)** - moshi motto dētabēsu yōryō (capacity) ga hitsuyō nara, furontoendo ni sawaru koto naku dēta tiyā dake o sukēru (scale) dekimasu. Motto dōji yūzā (concurrent user) o handoru suru hitsuyō ga areba, motto API sābā (server) o tsuika dekimasu.
-
-**Gijutsu no jūnan-sei (technology flexibility)** - furontoendo ni fureru (touch) koto naku React o Vue.js ni okikaeru (replace) koto ga dekimasu. Mata wa furontoendo ni fureru koto naku IRIS kara PostgreSQL ni ijū (migrate) dekimasu. Kaku tiyā wa yuruku (loosely) ketugō (coupled) sarete imasu.
-
-**Kantan na iji (easier maintenance)** - konsān ga bunri sarete iru to, bagu (bug) o koritsu (isolate) shite shūsei (fix) suru no ga kantan desu. Furontoendo kaihatsusha (developer) wa bakkuendo kaihatsusha kara dokuritsu shite shigoto dekimasu.
-
-Ima, kono ākitekucha o raibu demonstrēshon de jissai ni mimashō.
+Dewa, hajimemashou (Let's begin).
 
 ---
 
-# [SECTION 3: RAIBU DEMO TO KŌDO SETSUMEI / LIVE DEMO WITH CODE] (6 minutes)
+# [SECTION 2: SYSTEM ARCHITECTURE] (2.5 minutes)
 
-## Demo Shōkai (Demo Introduction) (15 seconds)
+## Part 2.1: Architecture no setsumei (1.5 minutes)
 
-Ima kara, akaunto sakusei (account creation) kara shain kanri made no kanzen na yūzā jānī o demonstrēto shimasu. Kaku kino o susumeru aida, sore o kano ni suru jūyō na kōdo jisō o kantan ni setsumei shimasu.
+**[Display: THREE_TIER_ARCHITECTURE.png]**
 
-Aratana burauza sesshon (session) de hajimemashō.
+Kore wa system architecture desu (This is the system architecture).
+Three-tier architecture wo tsukaimasu (we use...).
 
----
+### Ue no layer (Top Layer) - Presentation Tier
 
-## [DEMO PHASE 1: YŪZĀ TŌROKU / USER REGISTRATION] (60 seconds)
+**[Point to the top of diagram]**
 
-**[Navigate to: http://localhost:5173/signup / Saināpu pēji ni ido]**
+Kore wa Presentation Tier desu.
+User ga browser de tsukaimasu (users use with browser).
 
-Mazu, atarashii yūzā wa akaunto o tsukuru hitsuyō ga arimasu. Kore ga tōroku fōmu (form) desu.
+**Gijutsu (Technology):**
+- React 18
+- TypeScript - error (errors) wo mitsukemasu (find)
+- Material-UI - kirei na UI
+- React Router - page wo kaemasu (change pages)
 
-### UI Setsumei (UI Explanation)
+Port 5173 de ugokimasu (runs on...).
 
-Kore wa SignUp konpōnento desu. Gijutsu-teki ni dō ugoku ka o setsumei shimasu.
+### Mannaka no layer (Middle Layer) - Application Tier
 
-Kono konpōnento wa React no controlled components patān o shiyō shite imasu. Kaku input firudo (field) - namae, mēru (email), pasuwādo (password) - wa useState hook o tsukatte sutēto hensu (state variable) ni bindo (bind) sarete imasu. Yūzā ga taipu suru to, React ga sugu ni sutēto o kōshin shite, atarashii chi (value) de konpōnento o sai-rendā (re-render) shimasu. Kore ni yori, fōmu dēta o kanzen ni kontorōru (control) dekimasu.
+**[Point to the middle of diagram]**
 
-**[Fill in the form / Fōmu ni nyūryoku shinagarasetsumei]**
-- Namae: 田中太郎 (Tanaka Taro)
-- Mēru: tanaka.taro@example.com
-- Pasuwādo: password123
+Kore wa Application Tier desu.
+REST API desu.
 
-### Baridēshon Kōdo (Validation Code)
+**Shigoto (Work/Job):**
+- User ninshou (authentication) - touroku to login
+- Shain CRUD - Create, Read, Update, Delete
+- Data henkan (data conversion) - JSON wo tsukaimasu
 
-Tōroku botan o kurikku suru to, handleSubmit kansu ga jikkō saremasu. Mazu, e.preventDefault() o yobidashite, burauza no defōruto fōmu soshinsōsa (default form submission behavior) o teishi (stop) shimasu. Kore wa pēji rirōdo o hikiokoshimasu. Watashitachi wa JavaScript ni subete o handoru saseta node.
+Kaihatsu chuu (during development):
+- Port 5173 → Port 52773
+- Vite proxy wo tsukaimasu
+- CORS mondai (problems) wo kaiketsu shimasu (solve)
 
-Sorekara kuraianto-saido baridēshon o jikkō shimasu. Kōdo wa mittsu no koto o chekku shimasu: subete no firudo ga nyūryoku sarete iru ka, mēru ni @ shinboru ga fukumarete iru ka, soshite pasuwādo ga sukunakutomo 8-moji aru ka desu. Kore wa sābā rikuesuto o okuranaide yūzā ni sokoza no fīdobakku (feedback) o teikyō shimasu.
+### Shita no layer (Bottom Layer) - Data Tier
 
-**[Click Register button / Tōroku botan o kurikku]**
+**[Point to the bottom of diagram]**
 
-### API Tsūshin (API Communication)
+Kore wa Data Tier desu.
+InterSystems IRIS database desu.
 
-Baridēshon ga seikō (pass) suru to, furontoendo wa axios o tsukatte REST API o yobidashimasu. Rikuesuto wa /sem/signup e no POST de, fōmu dēta o rikuesuto badi (request body) no JSON toshite fukumimasu.
+**Tokuchou (Features):**
+- Multi-model database
+- ObjectScript wo tsukaimasu
+- Object, SQL, Key-value - zenbu (all) dekimasu
 
-Vite proxy ga kono rikuesuto o intāseputо (intercept) shite, pōto 52773 no IRIS sābā ni tenshō shimasu.
+**Juuyou (Important):**
+- UTF-8 encoding
+- Nihongo no namae to juusho (address)
+- $ZCONVERT kansuu (function) wo tsukaimasu
+- Mojibake (garbled text) shimasen
 
-### Bakkuendo Shori (Backend Processing)
+### Data no nagare (Data Flow)
 
-Bakkuendo dewa, AccountRegistration mesoddo ga JSON o ukete, %FromJSON o tsukatte pāsu (parse) shi, mata sābā-saido de dēta o baridēto shimasu - watashitachi wa kuraianto-saido baridēshon dake o kesshite shinrai (trust) shimasen - sorekara SQL kueri de mēru ga sudeni sonzai suru ka chekku shimasu.
+**[Point to the arrows]**
 
-Subete ga yūkō (valid) nara, atarashii tblAccount obujekuto o sakusei shi, puropati (property) o setto shi, %Save() o yobidashite dētabēsu ni eizoku (persist) shimasu. IRIS wa jidō-teki ni ID o wariate (assign) shi, dētabēsu rekōdo o sakusei shimasu.
+1. User ga React de sousa shimasu (operate/use)
+2. HTTP request wo okurimasu (send)
+3. API ni ikimasu (go to...)
+4. Database de shori shimasu (process)
+5. JSON response wo kaeshimasu (return)
+6. UI wo koushin shimasu (update)
 
-**[Show success message and redirect / Seikō messēji to ridairekuto o miseru]**
+Zenbu hayai desu (everything is fast)!
 
-Kanpeki (perfect)! Akaunto ga sakusei saremashita. Jidō-teki ni sainin pēji ni ridairekuto sarete iru koto ni chūi shite kudasai. Kore wa React Router no Navigate konpōnento desu - kuraianto-saido nabigēshon de, pēji rirōdo wa naku, tada shunkan-teki (instant) na sen'i (transition) desu.
+## Part 2.2: Merit (Benefits) (30 seconds)
 
----
+**Kono architecture no ii tokoro (good points):**
 
-## [DEMO PHASE 2: YŪZĀ ROGUIN / USER LOGIN] (45 seconds)
+1. **Bunri (Separation)**
+   - Kaku layer wa chigau shigoto (different work)
+   - Frontend - user experience
+   - API - business logic
+   - Database - data hozon (data storage)
 
-**[Now on: http://localhost:5173/signin / Sainin pēji ni imasu]**
+2. **Scale dekimasu**
+   - Database dake ookiku dekimasu (can make bigger)
+   - API dake fuyasemasu (can increase)
 
-Ima, sakki tsukutta kureden (credentials) de ninshō shimashō.
+3. **Gijutsu wo kaeraremasu (can change technology)**
+   - React → Vue.js OK
+   - IRIS → PostgreSQL OK
 
-### Ninshō Furō (Authentication Flow)
+4. **Maintenance ga kantan (easy)**
+   - Bug wo mitsuke yasui (easy to find bugs)
+   - Naoshi yasui (easy to fix)
 
-Sainin pēji wa saināpu ni nite imasu ga, yori shinpuru (simple) desu. Mēru to pasuwādo dake hitsuyō desu.
-
-**[Fill in credentials / Kuradensharu o nyūryoku]**
-- Mēru: tanaka.taro@example.com
-- Pasuwādo: password123
-
-**[Click Login button / Roguin botan o kurikku]**
-
-### Bakkuendo Ninshō (Backend Authentication)
-
-API kōru wa /sem/signin ni ikimasu. Bakkuendo wa mēru de akaunto o sagasu SQL kueri o jikkō shi, hozon sareta pasuwādo o toridashi, soshinsareta pasuwādo to hikaku shimasu.
-
-Hayai sekyuriti (security) nōto - genzai no jisō dewa, pasuwādo wa demonstrēshon mokuteki (purpose) de purēn tekisuto (plain text) de hozon sarete imasu. Puroddakushon dewa, soruto (salt) tsuki no bcrypt hasshingu (hashing) o shiyō shi, kono hikaku wa bcrypt no verify kansu o tsukatte okonawaremasu.
-
-### Sesshon Kanri (Session Management)
-
-Ninshō seikō (successful authentication) no ato, furontoendo wa setAuthData o yobidashi, localStorage ni futatsu no aitemu o hozon shimasu: isLoggedIn wa 'true' ni setto sare, userEmail wa yūzā no mēru adoresu (address) o hozon shimasu. Kore ni yori, yūzā ga pēji o rifuresshu (refresh) shite mo ninshō sutēto (authentication state) ga iji saremasu.
-
-**[Show redirect to employee list / Shain risuto e no ridairekuto o miseru]**
-
-Jidō-teki ni /employees ni ridairekuto saremashita. ProtectedRoute konpōnento ga localStorage kara yomu koto de watashitachi no ninshō sutētasu (status) o chekku shite, akusesu o kyoka (allow) shimashita. Moshi roguin shite inakattara, sainin ni ridairekuto sarete itа deshō.
-
----
-
-## [DEMO PHASE 3: SHAIN RISUTO KINO / EMPLOYEE LIST FEATURES] (45 seconds)
-
-**[Now on: http://localhost:5173/employees / Shain risuto ni imasu]**
-
-Kore ga main no shain risuto pēji desu. Kore wa apurikēshon no mottomo fukuzatsu (complex) na konpōnento no hitotsu desu.
-
-### Konpōnento Ākitekucha (Component Architecture)
-
-EmployeeList konpōnento wa mittsu no React hooks ga issho ni hataraite imasu. Dai-ichi, useState ga shain dēta, kensaku kīwādo (search keyword), firuta settei (filter setting), sōto hōkō (sort direction), soshite pējinēshon (pagination) sutēto o kanri shimasu. Dai-ni, useEffect ga konpōnento ga maunto (mount) suru toki ni shain o rōdo shimasu. Dai-san, useMemo ga firuta shite sōto sareta kekka (result) o memoka (memoize) suru koto de pafōmansu (performance) o saitekika shimasu.
-
-### Dēta Rōdingu (Data Loading)
-
-Kono konpōnento ga rōdo suru to, useEffect ga loadEmployees kansu o toriga (trigger) shimasu. Kore wa /sem/employees e no GET rikuesuto o shimasu. Bakkuendo wa deleteFlg = 0 o firuta suru WHERE ku (clause) de dētabēsu ni kueri suru node, akutibu (active) na shain dake o eraremasu. Soft-delete sareta mono wa kakusarete (hidden) imasu.
-
-Dēta wa JSON toshite kaette kite, setEmployees de sutēto o kōshin shimasu. React ga konpōnento o sai-rendā shi, tēburu (table) ga dēta o hyōji shimasu.
-
-### Kensaku Kino (Search Feature)
-
-**[Type in search box / Kensaku bokkusu ni taipu: "山田"]**
-
-Kensaku kino o demonstrēto shimasu. Kensaku wa pafōmansu no tame ni useMemo o tsukatte kuraianto-saido de jisō sarete imasu. Kensaku kīwādo ga kawaru to, useMemo ga Shain Bangō (Employee ID), Namae, mata wa Kana Namae firudo ni kīwādo ga arawareru ka o chekku suru koto de firuta sareta risuto o sai-keisan (recalculate) shimasu. Subete no hikaku (comparison) wa shō-moji (lowercase) ni sarete, daimonji/shō-moji o kubetsu shinai macchingu (matching) ni narimasu.
-
-**[Show instant results / Shunkan-teki na kekka o miseru]**
-
-Taipu suru to sugu ni tēburu ga kōshin saremasu. Naze nara React ga kawatta gyō (row) dake o kōritsu-teki ni sai-rendā suru kara desu.
-
-**[Clear search / Kensaku o kuriasu]**
-
-Firuta wa sudeni fetchu (fetch) shita dēta de memori nai de okonawaremasu. Kono yō na chiisai dētasetto (dataset) ni wa, kuraianto-saido firuta wa totemo hayai desu. Nanzen no shain ga iru puroddakushon shisutemu ni wa, sābā-saido pējinēshon to firuta o jisō shimasu.
+Dewa, demo wo mimashou (Let's see the demo)!
 
 ---
 
-## [DEMO PHASE 4: ATARASHII SHAIN O TSUIKA / ADD NEW EMPLOYEE] (90 seconds)
+# [SECTION 3: LIVE DEMO] (6 minutes)
 
-**[Click "新規登録" (Add Employee) button / Shain tsuika botan o kurikku]**
+## Demo no shoukai (Introduction) (15 seconds)
 
-Ima, atarashii shain o tsuikashimashō.
+Ima kara, account sakusei (account creation) kara shain kanri made misemasu (I will show...).
 
-### Maruchimodō Konpōnento (Multi-Mode Component)
+Atarashii browser de hajimemasu (start with new browser).
 
-**[Now on: http://localhost:5173/employees/new / Atarashii shain pēji ni imasu]**
+---
 
-Kore wa EmployeeDetail konpōnento desu. Kore wa omoshiroi desu. Naze nara mittsu no chigau mōdo - tsuika (add), henshū (edit), sakujo (delete) - o subete hitotsu no konpōnento de handoru suru kara desu. Konpōnento wa URL paramētā o chekku suru koto de mōdo o kenshutsu (detect) shimasu. ID ga "new" no toki, tsuika mōdo desu. Soredewa, sono tokutei (specific) no shain no henshū mōdo desu.
+## [PHASE 1: USER TOUROKU] (60 seconds)
 
-### Fōmu Jisō (Form Implementation)
+**[Navigate to: http://localhost:5173/signup]**
 
-Shain jōhō o nyūryoku shimasu.
+Mazu, atarashii user wo tsukurimasu (make new user).
+Kore wa touroku form (registration form) desu.
 
-**[Fill in form / Fōmu ni nyūryoku shinagarasetsumei]**
+### UI no setsumei
 
-- Shain Bangō: 12345 - Chōdo 5-keta (digits) de, kuraianto to sābā ryōhō (both) de baridēto saremasu
-- Namae: 山田花子 (Yamada Hanako)
-- Kana Namae: ヤマダハナコ - Katakana no hatsuon (pronunciation)
-- Seibetsu (Sex): Josei (Female) - Dētabēsu ni sūji (integer) 2 toshite hozon saremasu
+Kore wa SignUp component desu.
+
+**React no controlled components:**
+- Kaku input field - useState hook wo tsukaimasu
+- User ga type suru to (when user types)
+- Sugu state wo koushin shimasu (update immediately)
+
+**[Form ni nyuuryoku shimasu Fill in the form]**
+- Namae: Tanaka Tarou
+- Mail: tanaka.taro@example.com
+- Password: password123
+
+### Check (Validation)
+
+Touroku button wo click suru to (when click register button):
+
+**Check suru koto (Things to check):**
+- Zenbu nyuuryoku shimashita ka? (filled everything?)
+- Mail ni @ ga arimasu ka? (@ in email?)
+- Password wa 8-moji ijou desu ka? (8+ characters?)
+
+**[Touroku button wo click]**
+
+### API to no tsuushin (Communication)
+
+Check OK nara (if check is OK):
+- axios de API wo yobimasu (call API)
+- POST request → /sem/signup
+- JSON data wo okurimasu (send JSON data)
+
+### Backend no shori
+
+Backend de (at backend):
+1. JSON wo uketorimasu (receive)
+2. Mou ichido check shimasu (check again)
+3. Mail ga sudeni arimasu ka? (email already exists?)
+4. Atarashii account wo tsukurimasu (create)
+5. Database ni hozon shimasu (save)
+
+**[Seikou message Success message]**
+
+Dekimashita (Done)!
+Jidouteki ni (automatically) signin page ni ikimasu.
+
+---
+
+## [PHASE 2: LOGIN] (45 seconds)
+
+**[Now on: http://localhost:5173/signin]**
+
+Ima, login shimasu (Now, login).
+
+**[Nyuuryoku shimasu Fill in]**
+- Mail: tanaka.taro@example.com
+- Password: password123
+
+**[Login button wo click]**
+
+### Backend de no kakunin (Confirmation)
+
+API call → /sem/signin
+
+Backend de:
+1. Mail de account wo sagashimasu (search for account)
+2. Password wo check shimasu (check password)
+3. OK nara success
+
+**Juuyou (Important):**
+- Ima wa plain text (demo dakara for demo)
+- Hontou wa (actually) bcrypt wo tsukaimasu
+
+### Session kanri
+
+Seikou shitara (if successful):
+- localStorage ni hozon shimasu (save to localStorage)
+- isLoggedIn = 'true'
+- userEmail = mail address
+
+**[/employees ni idou Move to /employees]**
+
+Jidouteki ni shain list ni ikimashita!
+
+---
+
+## [PHASE 3: SHAIN LIST] (45 seconds)
+
+**[Now on: http://localhost:5173/employees]**
+
+Kore wa main no shain list page desu.
+
+### Component no setsumei
+
+EmployeeList component wa 3-tsu no React hooks wo tsukaimasu:
+
+1. **useState** - data wo kanri shimasu (manage data)
+   - Shain data
+   - Kensaku keyword
+   - Filter settings
+   - Sort direction
+   - Pagination
+
+2. **useEffect** - shain wo load shimasu (load employees)
+
+3. **useMemo** - hayaku shimasu (make fast)
+
+### Data no load
+
+Component ga load suru to (when component loads):
+- GET request → /sem/employees
+- Backend de database ni query
+- deleteFlg = 0 dake (only deleteFlg = 0)
+- Active na shain dake torimasu (get only active employees)
+
+### Kensaku kinou
+
+**[Kensaku box ni type: "Yamada"]**
+
+Kensaku wa client-side desu.
+
+**Nani wo check shimasu ka? (What to check?)**
+- Shain bangou (Employee ID)
+- Namae (Name)
+- Kana namae (Kana Name)
+
+Type suru to sugu table ga koushin saremasu (table updates immediately)!
+
+**[Kensaku wo clear Clear search]**
+
+Totemo hayai desu (very fast)!
+
+---
+
+## [PHASE 4: ATARASHII SHAIN WO TSUIKA] (90 seconds)
+
+**[「Shinki touroku」button wo click]**
+
+Atarashii shain wo tsuika shimasu (add new employee).
+
+**[Now on: http://localhost:5173/employees/new]**
+
+### Component no setsumei
+
+EmployeeDetail component desu.
+
+**3-tsu no mode:**
+- Add mode (tsuika mode)
+- Edit mode (henshuu mode)
+- Delete mode (sakujo mode)
+
+URL wo mite (look at URL) mode wo kimemasu (decide mode).
+
+### Form ni nyuuryoku
+
+**[Nyuuryoku shimasu Fill in]**
+
+- Shain bangou: 12345 (5-keta 5 digits)
+- Namae: Yamada Hanako
+- Kana namae: Yamada Hanako
+- Seibetsu (Gender): Josei (Female) - Database de 2
 - Denwa (Phone): 090-1234-5678
-- Busho (Department): 営業部 (Eigyō-bu / Sales Department)
-- Yūbin Bangō (Post Code): 100-0001 - Nihon no yūbin bangō fōmatto (format)
-- Jūsho (Address): 東京都千代田区千代田1-1
-- Taishoku Sutētasu (Retirement Status): Chekku shinai - Kono shain wa genzai akutibu desu
+- Busho (Department): Eigyoubu (Sales)
+- Yuubin bangou (Post Code): 100-0001
+- Juusho (Address): Tokyo-to Chiyoda-ku Chiyoda 1-1
+- Taishoku (Retirement): Check shinai (not checked)
 
-### Kuraianto-saido Baridēshon (Client-Side Validation)
+### Check (Validation)
 
-**[Click Register button / Tōroku botan o kurikku]**
+**[Touroku button wo click]**
 
-Fōmu wa Shain Bangō ga chōdo 5-moji de aru koto to, Namae ya Seibetsu nado no hitsuyō na firudo ga nyūryoku sarete iru koto o baridēto shimasu. Kono baridēshon wa sābā raunndotorippu (round-trip) nashi de shunkan-teki ni okonawaremasu.
+**Check suru koto:**
+- Shain bangou wa 5-moji desu ka? (5 characters?)
+- Namae wa arimasu ka? (name exists?)
+- Seibetsu wa arimasu ka? (gender exists?)
 
-### Kakunin Daiarogu (Confirmation Dialog)
+### Kakunin Dialog
 
-**[Show dialog / Daiarogu o miseru]**
+**[Dialog wo miseru Show dialog]**
 
-Hozon suru mae ni, kakunin daiarogu o hyōji shimasu. Kore wa Material-UI no Dialog konpōnento de, sōsa taipu (operation type) - create, update, mata wa delete - ni motozuku dainamikku (dynamic) na kontensu desu.
+「Hontou ni ii desu ka?」(Really OK?)
 
-**[Click "はい" (Yes) / "Hai" o kurikku]**
+**[「Hai」wo click]**
 
-### Bakkuendo Shori (Backend Processing)
+### Backend no shori
 
-Kakunin sareta toki, bakkuendo no CreateEmployee mesoddo wa mazu akutibu rekōdo no naka de chōfuku (duplicate) suru Shain Bangō ga nai ka chekku shimasu. Kore wa jūyō desu. Naze nara soft delete de, sakujo sareta shain no ID o saishiyō dekiru kara desu.
+Backend de:
+1. Onaji shain bangou ga arimasu ka? (same ID exists?)
+2. Atarashii employee object wo tsukurimasu (create)
+3. Data wo set shimasu (set data)
+4. UTF-8 conversion - Nihongo OK
+5. deleteFlg = 0 (active)
+6. Genzai no jikan (current time) wo hozon
+7. %Save() - Database ni hozon shimasu (save to database)
 
-Sorekara %New() o tsukatte atarashii tblEmployee obujekuto o sakusei shimasu. Kōdo wa subete no puropati o setto shi, Nihongo tekisuto ni UTF-8 kara IRIS no naibu fōmatto e henkan suru tame ni "I" direction no $ZCONVERT o shiyō shimasu. Akutibu sutētasu no tame ni deleteFlg o 0 ni setto shi, $ZDATETIME o tsukatte genzai no taimu sutanpu (timestamp) o upDateTime ni setto shimasu.
+**[Atarashii shain ga iru list wo miseru]**
 
-Saigo ni, %Save() o yobidashimasu. IRIS wa SQL INSERT bun (statement) o seisei shi, jikkō shi, jidō-inrikurimento (auto-increment) ID o wariate shite, seikō o kaesu.
-
-**[Show redirect to list with new employee / Atarashii shain ga aru risuto e no ridairekuto o miseru]**
-
-Kanpeki! Shain ga sakusei sarete, risuto no ichiban ue ni arawarete imasu. Naze nara kōshin taimu sutanpu no kōjun (descending order) de sōto shite iru kara desu - atarashii mono ga saki (newest first) desu.
-
----
-
-## [DEMO PHASE 5: SHAIN HENSHŪ / EDIT EMPLOYEE] (60 seconds)
-
-**[Click edit icon on the employee / Sakki tsukutta shain no henshū aikon o kurikku]**
-
-Kono shain o henshū shimashō.
-
-### Kizon Dēta no Rōdingu (Loading Existing Data)
-
-**[Now on: http://localhost:5173/employees/5 / Henshū pēji ni imasu]**
-
-Konpōnento wa henshū mōdo de aru koto o kenshutsu shimasu. Naze nara URL paramētā ga sūji de, "new" dewa nai kara desu. Sugu ni useEffect ga toriga shi, bakkuendo no GetEmployeeById mesoddo o yobidashimasu.
-
-Bakkuendo wa ID de dētabēsu kara persistent obujekuto o rōdo suru tame ni %OpenId o shiyō shimasu. Obujekuto ga sonzai (exist) suru ka to soft-delete sarete inai ka o chekku shite, sorekara "O" direction no $ZCONVERT o tsukatte UTF-8 e no shutsuryoku (output) no tame ni henkan sareta subete no puropati o motsu respponsu obujekuto o kōchiku shimasu.
-
-**[Show pre-filled form / Jizen nyūryoku sareta fōmu o miseru]**
-
-Fōmu ga kizon no dēta de jizen ni nyūryoku sarete imasu. Mata, Shain Bangō firudo ga disabled ni natte iru koto ni chūi shite kudasai - watashitachi wa shain ID o kaeru koto o kyoka shimasen. Naze nara sansho integuritī (referential integrity) o kowareru kanōsei ga aru kara desu.
-
-### Dēta no Kōshin (Updating Data)
-
-**[Modify fields / Firudo o henkō]**
-- Busho: 技術部 (Gijutsu-bu / Technical Department) ni henkō
-- Taishoku Sutētasu: Chekkubokkusu o chekku - Kono shain wa ima taishoku shimasu
-
-**[Click Update button / Kōshin botan o kurikku]**
-
-Onaji fōmu konpōnento desu ga, ima wa CreateEmployee dewa naku UpdateEmployee o yobidashimasu. Bakkuendo wa %OpenId de kizon no shain obujekuto o aki, kawatta puropati dake o kōshin shi, taimu sutanpu o kōshin shite, mata %Save() o yobidashimasu. IRIS wa UPDATE SQL bun o seisei shite jikkō shimasu.
-
-**[Show confirmation and updated list / Kakunin to kōshin sareta risuto o miseru]**
-
-Rekōdo ga kōshin saremashita. Busho ga Gijutsu-bu ni kawatte, ima "退職済み" (Taishoku-zumi / Retired) bajji (badge) ga hyōji sarete iru koto ni chūi shite kudasai.
+Dekimashita (Done)!
+Atarashii shain ga ichiban ue (at the top) ni arimasu!
 
 ---
 
-## [DEMO PHASE 6: SOFUTO SAKUJO / SOFT DELETE] (40 seconds)
+## [PHASE 5: SHAIN WO HENSHUU] (60 seconds)
 
-**[Click edit on the same employee / Onaji shain no henshū o kurikku]**
+**[Edit icon wo click]**
 
-Ima, sakujo kino o demonstrēto shimasu.
+Kono shain wo henshuu shimasu (edit this employee).
 
-### Sakujo Botan (Delete Button)
+**[Now on: http://localhost:5173/employees/5]**
 
-**[Show delete button at bottom / Shita no sakujo botan o miseru]**
+### Data no load
 
-Shita ni sakujo botan ga aru koto ni chūi shite kudasai - kore wa henshū mōdo de dake arawaremasu. Tsuika mōdo dewa arimasen.
+Component wa edit mode desu.
+Sugu backend kara data wo torimasu (get data from backend).
 
-### Sofuto Sakujo Patān (Soft Delete Pattern)
+Backend:
+- %OpenId de data wo hirakimasu (open data)
+- Sonzai shimasu ka? (exists?)
+- Soft-delete sarete imasen ka? (not soft-deleted?)
+- UTF-8 ni henkan shimasu (convert)
+- Response wo kaeshimasu (return)
 
-**[Click Delete button and show dialog / Sakujo botan o kurikku shite daiarogu o miseru]**
+**[Form wo miseru Show form]**
 
-Kono apurikēshon wa hard delete dewa naku soft delete o jisō shite imasu. Kore wa puroddakushon shisutemu no besuto purakutisu desu.
+Form ni data ga arimasu (form has data)!
+Shain bangou wa disabled - kaeraremasen (cannot change).
 
-**[Click confirm / Kakunin o kurikku]**
+### Data wo koushin
 
-Jissai ni dētabēsu kara rekōdo o sakujo suru kawari ni, DeleteEmployee mesoddo wa shain obujekuto o aki, deleteFlg o 1 ni setto shi, taimu sutanpu o kōshin shite, hozon shimasu. Rekōdo wa mada dētabēsu ni sonzai shimasu - tada sakujo sareta to māku sarete iru dake desu.
+**[Field wo henkou Modify fields]**
+- Busho: Gijutsubu (Technical Department)
+- Taishoku: Check suru (check) - Kono hito wa taishoku shimashita (retired)
 
-**[Show list - employee disappeared / Risuto o miseru - shain ga kieta]**
+**[Koushin button wo click]**
 
-Shain ga risuto kara kiemashita. Naze nara GetAllEmployees kueri ga WHERE deleteFlg = 0 de firuta suru kara desu.
+Backend:
+- UpdateEmployee wo yobimasu (call)
+- %OpenId de hirakimasu (open)
+- Kawatta data dake koushin shimasu (update only changed data)
+- Jikan wo koushin shimasu (update time)
+- %Save() - Database ni hozon shimasu (save)
 
-### Sofuto Sakujo no Rieki (Benefits of Soft Delete)
+**[Koushin sareta list wo miseru]**
 
-Kono apurōchi ni wa ikutsu ka no rieki (advantage) ga arimasu. Machigatte (by mistake) sakujo sareta baai, dēta o rikabarī dekimasu - tada furagu o 0 ni modoseba ii desu. Taishoku shita mono o fukumete, subete no shain no kanzen na kansa shōseki (audit trail) o iji dekimasu. Sansho integuritī o hozon shimasu - kowareta gaikī (foreign key) sansho wa arimasen. Soshite aru nensu (number of years) rekōdo o hozon suru koto o yōkyū (require) suru kanōsei ga aru dēta hozon pōrishī (data retention policy) ni junshū (comply) shimasu.
-
-Dētabēsu ni wa, EmployeeId to deleteFlg no composite unique index ga arimasu. Kono kashikoi (clever) dezain ni yori, shain ID 12345 o atarashii shain ni saishiyō dekimasu. Naze nara dētabēsu wa ("12345", 0) o ("12345", 1) to wa chigau mono to shite miru kara desu.
+Dekimashita (Done)!
+- Busho ga Gijutsubu ni narimashita (became...)
+- 「Taishoku zumi」badge ga arimasu!
 
 ---
 
-## [DEMO PHASE 7: ROGAUTO / LOGOUT] (20 seconds)
+## [PHASE 6: SOFT DELETE] (40 seconds)
 
-**[Click logout button in navigation bar / Nabigēshon bā no rogauto botan o kurikku]**
+**[Onaji shain no Edit wo click]**
 
-Saigo ni, rogauto shimashō.
+Sakujo kinou (delete function) wo misemasu.
 
-handleLogout kansu wa clearAuthData o yobidashi, localStorage kara isLoggedIn to userEmail aitemu o sakujo shimasu. Sorekara replace opushon (option) o true ni setto shite sainin pēji ni nabigēto shimasu. Kore wa genzai no rirekisho (history entry) o okikaeる node, burauza no bakku botan de hogo sareta pēji ni modorimasen.
+### Sakujo button
 
-**[Show signin page / Sainin pēji o miseru]**
+**[Shita no sakujo button wo miseru]**
 
-Sainin ni modotte kimashita. Moshi ima /employees ni chokusetsu akusesu shiyō to suru to...
+Sakujo button wa Edit mode dake arimasu.
 
-**[Type /employees in address bar / Adoresu bā ni /employees to taipu]**
+### Soft Delete to wa?
 
-ProtectedRoute konpōnento ga isAuthenticated() o chekku shimasu. localStorage ga kuriasu sarete iru node, false o kaesu. Dakara sugu ni sainin ni ridairekuto saremasu. Kore ni yori subete no hogo sareta rūto ga tekisetsu ni sekyua (secure) sarete iru koto ga hosho (ensure) saremasu.
+**[Sakujo button wo click, Dialog wo miseru]**
+
+Hard delete ja arimasen (not hard delete).
+Soft delete desu.
+
+**[Kakunin wo click]**
+
+Backend:
+- Database kara sakujo shimasen (don't delete from database)
+- deleteFlg = 1 ni shimasu (set to 1)
+- Jikan wo koushin shimasu (update time)
+- Hozon shimasu (save)
+
+Data wa mada arimasu (data still exists)!
+Tada flag = 1 desu.
+
+**[List wo miseru - shain ga kieta]**
+
+Shain ga list kara kiemashita (disappeared from list).
+Naze? (Why?)
+→ WHERE deleteFlg = 0 dakara
+
+### Soft Delete no merit (Benefits)
+
+**Ii tokoro (Good points):**
+
+1. **Recovery dekimasu (Can recover)**
+   - Machigaete sakujo shite mo (even if delete by mistake)
+   - Flag wo 0 ni modoseba (if return flag to 0) OK
+
+2. **Rireki ga nokorimasu (History remains)**
+   - Zenbu no shain no kiroku (record)
+   - Taishoku shita hito mo OK
+
+3. **Data hoji (Data retention)**
+   - Houritsu (law) de hitsuyou (necessary)
+   - Nan-nen ka hozon shimasu (save for some years)
+
+4. **ID no saiyou (ID reuse)**
+   - Shain bangou 12345 wo mata tsukaemasu (can use again)
+   - Database wa ("12345", 0) to ("12345", 1) wa chigaimasu (different)
+
+---
+
+## [PHASE 7: LOGOUT] (20 seconds)
+
+**[Logout button wo click]**
+
+Saigo (finally), logout shimasu.
+
+### Logout no shori
+
+handleLogout function:
+1. clearAuthData wo yobimasu (call)
+2. localStorage kara sakujo shimasu (delete from localStorage)
+   - isLoggedIn
+   - userEmail
+3. Signin page ni ikimasu (go to signin page)
+
+**[Signin page wo miseru]**
+
+Signin ni modorimashita (returned to signin)!
+
+**[/employees wo type]**
+
+Moshi ima /employees ni ikou to suru to (if try to go to...)
+→ ProtectedRoute ga check shimasu (checks)
+→ localStorage wa kara (empty)
+→ Sugu signin ni modorimasu (immediately return to signin)
+
+Kore de secure desu (this is secure)!
+
+---
+
+## Owari (End)
+
+Ijou desu (That's all).
+Go-seichou arigatou gozaimashita (Thank you for listening).
+
+Shitsumon wa arimasu ka? (Any questions?)
 
 ---
 
