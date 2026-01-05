@@ -24,7 +24,7 @@ Ohayou gozaimasu (Good morning).
 Kyou wa arigatou gozaimasu (Thank you for today).
 
 Watashi no namae wa S M Tanjilur Rahman desu (My name is...).
-Ima, IRIS to React.js wo benkyou shite imasu (I am studying...).
+Saishin, IRIS to React.js wo benkyou shite imasu (I am studying...).
 Kyou wa Employee Management System ni tsuite hanashimasu (I will talk about...).
 
 ## PROJECT ni tsuite (About the Project)
