@@ -154,14 +154,16 @@ const EmployeeList = () => {
       filtered = filtered.filter(emp => !emp.RetireFlg);
     }
 
-    // Filter by search keyword
-    if (searchKeyword) {
+    // Filter by search keyword - ONLY if 3+ characters
+    if (searchKeyword && searchKeyword.length >= 3) {
       const keyword = searchKeyword.toLowerCase();
       filtered = filtered.filter(emp => {
         const matchesId = (emp.EmployeeId || '').toLowerCase().includes(keyword);
         const matchesName = (emp.Name || '').toLowerCase().includes(keyword);
         const matchesKana = (emp.KanaName || '').toLowerCase().includes(keyword);
-        return matchesId || matchesName || matchesKana;
+        const matchesPhone = (emp.PhoneNumber || '').toLowerCase().includes(keyword);
+        const matchesEmail = (emp.Email || '').toLowerCase().includes(keyword);
+        return matchesId || matchesName || matchesKana || matchesPhone || matchesEmail;
       });
     }
 
@@ -256,11 +258,12 @@ const EmployeeList = () => {
           >
             {/* Search Field */}
             <TextField
-              placeholder="キーワード検索"
+              placeholder="キーワード検索 (3文字以上)"
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               size="small"
               sx={{ flexGrow: 1, minWidth: 250 }}
+              helperText={searchKeyword.length > 0 && searchKeyword.length < 3 ? "3文字以上入力してください" : ""}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -362,6 +365,8 @@ const EmployeeList = () => {
 
                       <TableCell>カナ氏名</TableCell>
                       <TableCell>性別</TableCell>
+                      <TableCell>電話番号</TableCell>
+                      <TableCell>メールアドレス</TableCell>
                       <TableCell>退職</TableCell>
                     </TableRow>
                   </TableHead>
@@ -402,6 +407,12 @@ const EmployeeList = () => {
 
                         {/* Sex */}
                         <TableCell>{getSexLabel(employee.Sex)}</TableCell>
+
+                        {/* Phone Number */}
+                        <TableCell>{employee.PhoneNumber || '-'}</TableCell>
+
+                        {/* Email */}
+                        <TableCell>{employee.Email || '-'}</TableCell>
 
                         {/* Retire Flag */}
                         <TableCell>

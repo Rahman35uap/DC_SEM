@@ -16,6 +16,7 @@ export interface Employee {
   PostCode?: string;              // Optional - Postal code (郵便番号)
   Address?: string;               // Optional - Address (住所)
   PhoneNumber?: string;           // Optional - Phone number (電話番号)
+  Email?: string;                 // Optional - Email address (メールアドレス)
   Department?: string;            // Optional - Department (所属)
   RetireFlg: boolean;             // Required - Retirement flag (退職フラグ)
   upDateTime?: string;            // Optional - Update timestamp
@@ -92,6 +93,7 @@ export interface EmployeeFormState {
   postCode: string;
   address: string;
   phoneNumber: string;
+  email: string;
   department: string;
   retireFlg: boolean;
 }

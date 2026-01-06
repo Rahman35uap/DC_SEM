@@ -205,11 +205,12 @@ const EmployeeListPage = () => {
           {/* Search Box */}
           <Box sx={{ display: 'flex', gap: 1, flexGrow: 1 }}>
             <TextField
-              placeholder="キーワードを入力"
+              placeholder="キーワードを入力 (3文字以上)"
               value={filters.keyword}
               onChange={(e) => handleFilterChange('keyword', e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               size="small"
+              helperText={filters.keyword.length > 0 && filters.keyword.length < 3 ? "3文字以上入力してください" : ""}
               sx={{ flexGrow: 1, maxWidth: 400 }}
             />
             <Button
@@ -292,13 +293,15 @@ const EmployeeListPage = () => {
                     </TableCell>
                     <TableCell>カナ氏名</TableCell>
                     <TableCell>性別</TableCell>
+                    <TableCell>電話番号</TableCell>
+                    <TableCell>メールアドレス</TableCell>
                     <TableCell>退職</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {currentPageEmployees.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} align="center">
+                      <TableCell colSpan={8} align="center">
                         データがありません
                       </TableCell>
                     </TableRow>
@@ -322,6 +325,8 @@ const EmployeeListPage = () => {
                         <TableCell>{employee.Name}</TableCell>
                         <TableCell>{employee.KanaName}</TableCell>
                         <TableCell>{formatGender(employee.Sex)}</TableCell>
+                        <TableCell>{employee.PhoneNumber || '-'}</TableCell>
+                        <TableCell>{employee.Email || '-'}</TableCell>
                         <TableCell>
                           {employee.RetireFlg && (
                             <Checkbox checked disabled />

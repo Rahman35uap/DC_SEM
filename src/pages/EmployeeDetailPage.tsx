@@ -68,6 +68,7 @@ const EmployeeDetailPage = () => {
     postCode: '',
     address: '',
     phoneNumber: '',
+    email: '',
     department: '',
     retireFlg: false,
   });
@@ -105,6 +106,7 @@ const EmployeeDetailPage = () => {
         postCode: employee.PostCode || '',
         address: employee.Address || '',
         phoneNumber: employee.PhoneNumber || '',
+        email: employee.Email || '',
         department: employee.Department || '',
         retireFlg: employee.RetireFlg || false,
       });
@@ -457,6 +459,20 @@ const EmployeeDetailPage = () => {
                     onChange={handleChange}
                     placeholder="090-XXXX-XXXX"
                     inputProps={{ maxLength: 13 }}
+                    disabled={loading}
+                  />
+                </Grid>
+                
+                <Grid item xs={12} md={3}>
+                  <TextField
+                    fullWidth
+                    label="メールアドレス"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="example@company.com"
+                    inputProps={{ maxLength: 100 }}
                     disabled={loading}
                   />
                 </Grid>
